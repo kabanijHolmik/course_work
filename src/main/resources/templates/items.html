@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Item Details</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+    <style>
+        body {
+            background: linear-gradient(to right, #1976D2, #0D47A1);
+            color: #333;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        div {
+            margin: 20px 0;
+        }
+
+        a {
+            background-color: #2196F3;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 25px;
+            display: inline-block;
+            text-decoration: none;
+        }
+
+        a:hover {
+            background-color: #1565C0;
+        }
+
+        table {
+            background-color: #fff;
+            border-radius: 10px;
+            overflow: hidden;
+            color: #000; /* Черный цвет текста внутри таблицы */
+        }
+
+        th {
+            background-color: #2196F3;
+            color: #fff;
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: #E3F2FD;
+        }
+
+        .item-row:hover .details-button {
+            display: inline-block;
+        }
+
+        .details-button {
+            display: none;
+        }
+
+        th a {
+            color: #fff; /* Цвет ссылок в заголовках столбцов */
+            text-decoration: none;
+        }
+
+        th a:hover {
+            text-decoration: underline; /* Подчеркивание при наведении на ссылку в заголовке столбца */
+        }
+    </style>
+</head>
+<body>
+
+<div style="display: flex; align-items: center; margin-top: 10px; color: #fff; padding: 10px 20px;">
+    <!-- Форма поиска -->
+    <form th:action="@{/}" method="get" style="display: flex; align-items: center; background-color: #2196F3; color: #fff; border-radius: 25px; text-decoration: none; overflow: hidden; height: 40px;">
+        <input type="text" id="searchId" name="searchId" placeholder="Поиск по ID" style="margin: 5px;margin-left:10px; border: none; outline: none; background-color: transparent; height: 100%;" />
+        <button type="submit" style="background: none; border: none; cursor: pointer; height: 100%;">
+            <i class="fas fa-search" style="font-size: 20px;"></i>
+        </button>
+    </form>
+
+    <!-- Кнопка добавления товара -->
+    <a href="/add-item" style="margin-left: 5px; background-color: #2196F3; color: #fff; padding: 10px 20px; border-radius: 25px; text-decoration: none; height: 40px;">Добавить товар</a>
+</div>
+
+
+<table class="striped">
+    <thead>
+    <tr>
+        <th><a th:href="@{/(sortBy='Product_id', sortOrder=${sortOrder == 'ASC' ? 'DESC' : 'ASC'})}">ID</a></th>
+        <th><a th:href="@{/(sortBy='Product_code', sortOrder=${sortOrder == 'ASC' ? 'DESC' : 'ASC'})}">Code</a></th>
+        <th><a th:href="@{/(sortBy='Product_name', sortOrder=${sortOrder == 'ASC' ? 'DESC' : 'ASC'})}">Name</a></th>
+        <th><a th:href="@{/(sortBy='Product_category', sortOrder=${sortOrder == 'ASC' ? 'DESC' : 'ASC'})}">Category</a></th>
+        <th><a th:href="@{/(sortBy='Product_price', sortOrder=${sortOrder == 'ASC' ? 'DESC' : 'ASC'})}">Price</a></th>
+        <th><a th:href="@{/(sortBy='Product_manufacturer_country', sortOrder=${sortOrder == 'ASC' ? 'DESC' : 'ASC'})}">Manufacturer</a></th>
+        <th><a th:href="@{/(sortBy='Supplier', sortOrder=${sortOrder == 'ASC' ? 'DESC' : 'ASC'})}">Supplier</a></th>
+        <th><a th:href="@{/(sortBy='Product_units', sortOrder=${sortOrder == 'ASC' ? 'DESC' : 'ASC'})}">Units</a></th>
+        <th><a th:href="@{/(sortBy='Product_location', sortOrder=${sortOrder == 'ASC' ? 'DESC' : 'ASC'})}">Location</a></th>
+        <th><a th:href="@{/(sortBy='Product_status', sortOrder=${sortOrder == 'ASC' ? 'DESC' : 'ASC'})}">Status</a></th>
+        <th><a th:href="@{/(sortBy='Product_notes', sortOrder=${sortOrder == 'ASC' ? 'DESC' : 'ASC'})}">Note</a></th>
+        <th><a th:href="@{/(sortBy='Receipt_date', sortOrder=${sortOrder == 'ASC' ? 'DESC' : 'ASC'})}">Receipt day</a></th>
+        <th><a th:href="@{/(sortBy='Sale_date', sortOrder=${sortOrder == 'ASC' ? 'DESC' : 'ASC'})}">Sale date</a></th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="item : ${items}" class="item-row" data-item-id="${item.id}">
+        <td th:text="${item.id}"></td>
+        <td th:text="${item.code}"></td>
+        <td th:text="${item.name}"></td>
+        <td th:text="${item.category}"></td>
+        <td th:text="${item.price}"></td>
+        <td th:text="${item.country}"></td>
+        <td th:text="${item.supplier}"></td>
+        <td th:text="${item.unit}"></td>
+        <td th:text="${item.location}"></td>
+        <td th:text="${item.status}"></td>
+        <td th:text="${item.note}"></td>
+        <td th:text="${item.receiptDay}"></td>
+        <td th:text="${item.saleDate}"></td>
+        <td>
+            <!-- Использование классов Materialize для стилизации кнопки -->
+            <a class="btn details-button" th:href="'/item/' + ${#strings.replace(item.id, ',', '')}">Подробнее</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var rows = document.getElementsByClassName('item-row');
+        for (var i = 0; i < rows.length; i++) {
+            rows[i].addEventListener('mouseover', function() {
+                this.getElementsByClassName('details-button')[0].style.display = 'inline-block';
+            });
+            rows[i].addEventListener('mouseout', function() {
+                this.getElementsByClassName('details-button')[0].style.display = 'none';
+            });
+        }
+    });
+</script>
+</body>
+</html>

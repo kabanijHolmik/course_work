@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        input, select, button {
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 100%;
+        }
+
+        select {
+            width: 100%;
+        }
+
+        button {
+            background-color: #007bff;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Добавить новый товар</h1>
+    <a th:href="@{/}" class="btn btn-primary" style="text-decoration: none; color: #fff; background-color: #007bff; padding: 10px 20px; border-radius: 5px; display: inline-block; margin-bottom: 20px;">Назад</a>
+    <form action="/save-item" method="post" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="code">Код</label>
+            <input type="text" id="code" name="code" required>
+        </div>
+        <div class="form-group">
+            <label for="price">Цена</label>
+            <input type="text" id="price" name="price" required>
+        </div>
+        <div class="form-group">
+            <label for="name">Наименование</label>
+            <input type="text" id="name" name="name" required>
+        </div>
+        <div class="form-group">
+            <label for="category">Категория</label>
+            <input type="text" id="category" name="category" required>
+        </div>
+        <div class="form-group">
+            <label for="unit">Единица измерения</label>
+            <input type="text" id="unit" name="unit" required>
+        </div>
+        <div class="form-group">
+            <label for="location">Местонахождение</label>
+            <input type="text" id="location" name="location" required>
+        </div>
+        <div class="form-group">
+            <label for="status">Статус</label>
+            <select id="status" name="status" required>
+                <option value="Дефект">Дефект</option>
+                <option value="Новый">Новый</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="note">Примечание</label>
+            <input type="text" id="note" name="note" required>
+        </div>
+        <div class="form-group">
+            <label for="country">Страна</label>
+            <input type="text" id="country" name="country" required>
+        </div>
+        <div class="form-group">
+            <label for="receiptDay">Дата поступления</label>
+            <input type="date" id="receiptDay" name="receiptDay" required>
+        </div>
+        <div class="form-group">
+            <label for="saleDate">Дата продажи</label>
+            <input type="date" id="saleDate" name="saleDate" required>
+        </div>
+        <button type="submit">Сохранить</button>
+    </form>
+</div>
+</body>
+</html>

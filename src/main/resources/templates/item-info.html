@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Item Details</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+
+    <style>
+        body {
+            background: #f0f0f0;
+            color: #333;
+            font-family: 'Open Sans', sans-serif;
+            margin: 0;
+        }
+
+        .header {
+            background-color: #1565c0;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        a {
+    color: #fff;
+    text-decoration: none;
+    transition: color 0.3s ease;
+    border-radius: 25px; /* добавленное свойство */
+}
+
+a:hover {
+    color: #1976d2;
+}
+
+        #menu {
+            display: flex;
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        #menu li {
+            margin: 0;
+            padding: 10px;
+            text-align: center;
+        }
+
+        #menu li a {
+            color: #fff;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        #menu li a:hover {
+            color: #1976d2;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 90%;
+            max-width: 800px;
+            margin: 20px auto;
+            background-color: #fff;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #1565c0;
+            color: #fff;
+        }
+
+        td[contenteditable="true"] {
+            background-color: #e3f2fd;
+        }
+
+        form {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        button {
+            background-color: #1976d2;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 25px;
+            border: none;
+            cursor: pointer;
+            margin: 5px;
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #1565c0;
+        }
+        h1 {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<div class="header">
+    <a th:href="@{/}" class="btn btn-primary" style="text-decoration: none; color: #fff; background-color: #007bff; border-radius: 5px; display: inline-block;">Назад</a>
+    <ul id="menu">
+        <li>
+            <form id="myForm" action="/item/update" method="post" enctype="multipart/form-data">
+                <button type="submit">Обновить</button>
+            </form>
+        </li>
+        <li>
+            <form th:action="@{'/item/delete/' + ${item.id}}" method="post" onsubmit="return confirm('Вы уверены, что хотите удалить этот элемент?');">
+                <button type="submit">Удалить</button>
+            </form>
+        </li>
+    </ul>
+</div>
+
+<h1 th:text = "${item.name}"></h1>
+
+<table id="itemTable">
+    <tr>
+        <th>ID</th>
+        <td contenteditable="false" th:text="${item.id}" id="itemID"></td>
+    </tr>
+    <tr>
+        <th>Code</th>
+        <td contenteditable="true" th:text="${item.code}" id="itemCode"></td>
+    </tr>
+    <tr>
+        <th>Name</th>
+        <td contenteditable="true" th:text="${item.name}" id="itemName"></td>
+    </tr>
+    <tr>
+        <th>Category</th>
+        <td contenteditable="true" th:text="${item.category}" id="itemCategory"></td>
+    </tr>
+    <tr>
+        <th>Price</th>
+        <td contenteditable="true" th:text="${item.price}" id="itemPrice"></td>
+    </tr>
+    <tr>
+        <th>Manufacturer</th>
+        <td contenteditable="true" th:text="${item.country}" id="itemCountry"></td>
+    </tr>
+    <tr>
+        <th>Supplier</th>
+        <td contenteditable="true" th:text="${item.supplier}" id="itemSupplier"></td>
+    </tr>
+    <tr>
+        <th>Unit</th>
+        <td contenteditable="true" th:text="${item.unit}" id="itemUnit"></td>
+    </tr>
+    <tr>
+        <th>Location</th>
+        <td contenteditable="true" th:text="${item.location}" id="itemLocation"></td>
+    </tr>
+    <tr>
+        <th>Status</th>
+        <td contenteditable="true" th:text="${item.status}" id="itemStatus"></td>
+    </tr>
+    <tr>
+        <th>Note</th>
+        <td contenteditable="true" th:text="${item.note}" id="itemNote"></td>
+    </tr>
+    <tr>
+        <th>Receipt day</th>
+        <td contenteditable="true" th:text="${item.receiptDay}" id="itemReceiptDate"></td>
+    </tr>
+    <tr>
+        <th>Sale date</th>
+        <td contenteditable="true" th:text="${item.saleDate}" id="itemSaleDate"></td>
+    </tr>
+</table>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('.burger-icon').click(function () {
+            $('#menu').toggle();
+        });
+    });
+
+    function confirmDelete() {
+        var result = confirm("Вы уверены, что хотите удалить этот элемент?");
+        if (result) {
+            // Добавьте код для удаления элемента
+        }
+    }
+
+    document.getElementById('myForm').addEventListener('submit', function (e) {
+        e.preventDefault(); // Отменить стандартную отправку формы
+
+        var tableData = Array.from(document.querySelectorAll('#itemTable td'))
+            .map(td => td.textContent); // Собрать текстовые данные из каждой ячейки
+
+        var data = {
+            id: tableData[0],
+            code: tableData[1],
+            name: tableData[2],
+            category: tableData[3],
+            price: tableData[4],
+            country: tableData[5],
+            supplier: tableData[6],
+            unit: tableData[7],
+            location: tableData[8],
+            status: tableData[9],
+            note: tableData[10],
+            receiptDate: tableData[11],
+            saleDate: tableData[12]
+        }; // Поместить данные в объект
+
+        fetch('/item/update', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data) // Отправка данных в формате JSON
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success:', data);
+            })
+    });
+</script>
+<script>
+    function updateStatus(td) {
+        var status = td.textContent.trim();
+        td.dataset.status = status;
+    }
+</script>
+</body>
+</html>
+
+
