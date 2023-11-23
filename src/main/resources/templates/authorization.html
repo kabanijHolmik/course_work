@@ -19,6 +19,10 @@
         <button type="submit">Login</button>
     </div>
 </form>
-<p th:text="${message}"></p>
+<p th:if="${message}" th:text="${message}"></p>
+
+<p th:unless="${message}">
+    <a th:href="@{/registration}">Зарегистрироваться</a>
+</p>
 </body>
 </html>
