@@ -121,4 +121,24 @@ public class UserService {
         }
         return false;
     }
+
+    public Boolean hasSameUsername(User user){
+        try(Connection connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
+            Statement statement = connection.createStatement();
+
+        ){
+            ResultSet resultSet = statement.executeQuery("select count(*) as n from Users where username = '" + user.getLogin() + "';");
+
+            if (resultSet.next()){
+                if (resultSet.getInt("n") > 0)
+                    return true;
+                else return false;
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return false;
+    }
 }
