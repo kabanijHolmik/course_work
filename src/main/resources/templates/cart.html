@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <style>
+        body {
+            background-color: #F0F4F8;
+            color: #333;
+        }
+
+        h1 {
+            color: #0066CC;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #0066CC;
+            color: white;
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: #E5EEF4;
+        }
+
+        button {
+            background-color: #0066CC;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 6px 12px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0052A3;
+        }
+    </style>
+    <title>Card Items</title>
+</head>
+<body>
+<h1>Card Items</h1>
+
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Code</th>
+        <th>Price</th>
+        <th>Name</th>
+        <th>Category</th>
+        <th>Unit</th>
+        <th>Location</th>
+        <th>Status</th>
+        <th>Note</th>
+        <th>Country</th>
+        <th>Supplier</th>
+        <th>Receipt Date</th>
+        <th>Sale Date</th>
+        <th></th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="cart : ${items}">
+        <td th:text="${cart.id}"></td>
+        <td th:text="${cart.code}"></td>
+        <td th:text="${cart.price}"></td>
+        <td th:text="${cart.name}"></td>
+        <td th:text="${cart.category}"></td>
+        <td th:text="${cart.unit}"></td>
+        <td th:text="${cart.location}"></td>
+        <td th:text="${cart.status}"></td>
+        <td th:text="${cart.note}"></td>
+        <td th:text="${cart.country}"></td>
+        <td th:text="${cart.supplier}"></td>
+        <td th:text="${cart.receiptDay}"></td>
+        <td th:text="${cart.saleDate}"></td>
+        <td>
+            <form th:action="@{'/cart/restore/' + ${cart.id}}" method="post" onsubmit="return confirm('Вы уверены, что хотите восстановить этот элемент?');">
+                <button type="submit">Восстановить</button>
+            </form>
+        </td>
+        <td>
+            <form th:action="@{'/cart/delete/' + ${cart.id}}" method="post" onsubmit="return confirm('Вы уверены, что хотите безвозвратно удалить этот элемент?');">
+                <button type="submit">Удалить</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

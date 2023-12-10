@@ -61,12 +61,46 @@ public class ItemService {
         return items;
     }
 
+    public List<Item> list() {
+        List<Item> items = new ArrayList<>();
+
+        String query = "select * from Products left join Stock using(product_id) left join Dates using(Product_id) left join Prices using(Product_id) left join Manufacturers using(Product_code)";
+
+        try (Connection connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
+             Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(query)
+        ) {
+            while (resultSet.next()) {
+                int id = resultSet.getInt("Product_id");
+                int code = resultSet.getInt("Product_code");
+                String name = resultSet.getString("Product_name");
+                String category = resultSet.getString("Product_category");
+                Blob photo = resultSet.getBlob("Product_photo");
+                String location = resultSet.getString("Product_location");
+                String unit = resultSet.getString("Product_units");
+                String status = resultSet.getString("Product_status");
+                String note = resultSet.getString("Product_notes");
+                Date receiptDate = resultSet.getDate("Receipt_date");
+                Date saleDate = resultSet.getDate("Sale_date");
+                Float price = resultSet.getFloat("Product_price");
+                String country = resultSet.getString("Product_manufacturer_country");
+                String supplier = resultSet.getString("Supplier");
+
+                items.add(new Item(id, code, price, name, category, photo, unit, location, status, note, country, supplier, receiptDate, saleDate));
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Ошибка при подключении к БД: " + e.getMessage());
+        }
+
+        return items;
+    }
+
 
     public void saveItem(Item item){
         try(Connection connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
             Statement statement = connection.createStatement()
         ){
-            System.out.println(item.getPhoto());
             statement.executeUpdate("insert into Products(Product_name, Product_category, Product_code) values('"+ item.getName() +"', '"+ item.getCategory()+"',"+ item.getCode()+")");
 
             try(ResultSet resultSet = statement.executeQuery("Select max(Product_ID) as Product_ID from Products")) {
@@ -84,13 +118,49 @@ public class ItemService {
         }
     }
 
-    public void deleteItem(int id){
-        try(Connection connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
-            Statement statement = connection.createStatement()
-        ){
-            statement.executeUpdate("delete from Products where Product_id ="+ id);
+    public void deleteItem(int id) {
+        String selectQuery = "SELECT * FROM Products LEFT JOIN Stock USING(Product_id) LEFT JOIN Dates USING(Product_id) LEFT JOIN Prices USING(Product_id) LEFT JOIN Manufacturers USING(Product_code) WHERE Product_ID = " + id;
+
+        try (Connection connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
+             Statement selectStatement = connection.createStatement();
+             ResultSet resultSet = selectStatement.executeQuery(selectQuery)
+        ) {
+            while (resultSet.next()) {
+                int code = resultSet.getInt("Product_code");
+                String name = resultSet.getString("Product_name");
+                String category = resultSet.getString("Product_category");
+                Blob photo = resultSet.getBlob("Product_photo");
+                String location = resultSet.getString("Product_location");
+                String unit = resultSet.getString("Product_units");
+                String status = resultSet.getString("Product_status");
+                if (status == null) status = "Новый";
+                String note = resultSet.getString("Product_notes");
+                Date receiptDate = resultSet.getDate("Receipt_date");
+                if (receiptDate == null) receiptDate = Date.valueOf("2023-01-01");
+                Date saleDate = resultSet.getDate("Sale_date");
+                if (saleDate == null) saleDate = Date.valueOf("2023-01-01");
+                float price = resultSet.getFloat("Product_price");
+                String country = resultSet.getString("Product_manufacturer_country");
+                String supplier = resultSet.getString("Supplier");
+                System.out.println(id);
+
+                try (Statement insertStatement = connection.createStatement()) {
+                    String insertQuery = "INSERT INTO Cart (Product_name, Product_category, Product_code, Product_location, Product_units, Product_status, Product_notes, Receipt_date, Sale_date, Product_price, Product_manufacturer_country, Supplier)\n" +
+                            "VALUES\n" +
+                            "('" + name + "', '" + category + "', " + code + ", '" + location + "', '" + unit + "', '" + status + "', '" + note + "', '" + receiptDate + "', '" + saleDate + "', " + price + ", ' " + country + "', '" + supplier + "')";
+                    insertStatement.executeUpdate(insertQuery);
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
-        catch (SQLException e) {
+
+        try (Connection connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
+             Statement deleteStatement = connection.createStatement()
+        ) {
+            String deleteQuery = "DELETE FROM Products WHERE Product_id = " + id;
+            deleteStatement.executeUpdate(deleteQuery);
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }

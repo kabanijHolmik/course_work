@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
-    <title>Login</title>
+    <title>Registration</title>
     <style>
         body {
             background: linear-gradient(to right, #1976D2, #0D47A1);
@@ -35,7 +35,7 @@
             font-size: 16px;
         }
 
-        button, a {
+        button {
             background-color: #2196F3;
             color: #fff;
             padding: 12px 24px;
@@ -47,37 +47,52 @@
             border: none;
         }
 
-        button:hover, a:hover {
+        button:hover {
             background-color: #1565C0;
         }
 
-        p {
+        a {
+            background-color: #2196F3;
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: 25px;
+            text-decoration: none;
+            margin-top: 20px;
+            cursor: pointer;
             font-size: 16px;
+            border: none;
+            transition: background-color 0.3s ease-in-out;
         }
 
-        a {
-            margin-left: 5px;
+        a:hover {
+            background-color: #1565C0;
         }
     </style>
 </head>
 <body>
-<h1>Login</h1>
-<form th:action="@{/login}" method="post">
+<h1>Registration</h1>
+<form th:action="@{/register}" method="post">
     <div>
-        <label for="username">Username:</label>
-        <input type="text" id="username" name="username" required>
+        <label for="login">Username:</label>
+        <input type="text" id="login" name="login" required>
     </div>
     <div>
         <label for="password">Password:</label>
         <input type="password" id="password" name="password" required>
     </div>
     <div>
-        <button type="submit">Login</button>
+        <button type="submit">Register</button>
         <p th:if="${message}" style="color: red; margin-top: 20px;">
             <span th:text="${message}"></span>
             <a th:href="@{/registration}">Register</a>
         </p>
     </div>
 </form>
+<div>
+<p style="font-size: 16px; margin-top: 20px;">
+    Already have an account?
+    <p><a href="/authorization">Login</a></p>
+</p>
+</div>
 </body>
 </html>

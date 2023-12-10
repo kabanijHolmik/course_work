@@ -45,7 +45,7 @@ public class UserService {
         try(Connection connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
             Statement statement = connection.createStatement()
         ){
-            statement.executeUpdate("insert into Users(username, password_hash) values('"+ user.getLogin()+"', '"+ user.getPassword()+"')");
+            statement.executeUpdate("insert into Users(username, password_hash) values('"+ user.getLogin()+"', md5('"+ user.getPassword()+"'))");
 
         }
         catch (SQLException e) {
@@ -88,6 +88,29 @@ public class UserService {
                 String login = resultSet.getString("username");
 
                 User user = new User(login, password, id);
+                return user;
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        return null;
+    }
+    public static User getUserByUsername(String username) {
+
+        try(Connection connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
+            Statement statement = connection.createStatement();
+
+        ){
+            ResultSet resultSet = statement.executeQuery("select * from Users where username = '" + username + "'");
+
+            if (resultSet.next()){
+                String password = resultSet.getString("password_hash");
+                int id = resultSet.getInt("id");
+
+                User user = new User(username, password, id);
                 return user;
             }
 

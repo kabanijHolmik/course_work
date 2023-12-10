@@ -1,38 +1,31 @@
 package com.coursework.models;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-
-import java.sql.Blob;
 import java.sql.Date;
 
-public class Item {
+public class Cart {
     private int id;
     private int code;
     private Float price;
     private String name;
     private String category;
-    private Blob photo;
     private String unit;
     private String location;
     private String status;
     private String note;
     private String country;
     private String supplier;
-    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date receiptDay;
-    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date saleDate;
 
-    public Item() {
+    public Cart() {
     }
 
-    public Item(int id, int code, Float price, String name, String category, Blob photo, String unit, String location, String status, String note, String country,String supplier, Date receiptDay, Date saleDate) {
+    public Cart(int id, int code, Float price, String name, String category, String unit, String location, String status, String note, String country, String supplier, Date receiptDay, Date saleDate) {
         this.id = id;
         this.code = code;
         this.price = price;
         this.name = name;
         this.category = category;
-        this.photo = photo;
         this.unit = unit;
         this.location = location;
         this.status = status;
@@ -42,7 +35,6 @@ public class Item {
         this.receiptDay = receiptDay;
         this.saleDate = saleDate;
     }
-
 
     public int getId() {
         return this.id;
@@ -62,10 +54,6 @@ public class Item {
 
     public String getCategory() {
         return this.category;
-    }
-
-    public Blob getPhoto() {
-        return this.photo;
     }
 
     public String getUnit() {
@@ -89,7 +77,7 @@ public class Item {
     }
 
     public String getSupplier() {
-        return supplier;
+        return this.supplier;
     }
 
     public Date getReceiptDay() {
@@ -118,10 +106,6 @@ public class Item {
 
     public void setCategory(String category) {
         this.category = category;
-    }
-
-    public void setPhoto(Blob photo) {
-        this.photo = photo;
     }
 
     public void setUnit(String unit) {
@@ -158,8 +142,8 @@ public class Item {
 
     public boolean equals(final Object o) {
         if (o == this) return true;
-        if (!(o instanceof Item)) return false;
-        final Item other = (Item) o;
+        if (!(o instanceof Cart)) return false;
+        final Cart other = (Cart) o;
         if (!other.canEqual((Object) this)) return false;
         if (this.getId() != other.getId()) return false;
         if (this.getCode() != other.getCode()) return false;
@@ -172,9 +156,6 @@ public class Item {
         final Object this$category = this.getCategory();
         final Object other$category = other.getCategory();
         if (this$category == null ? other$category != null : !this$category.equals(other$category)) return false;
-        final Object this$photo = this.getPhoto();
-        final Object other$photo = other.getPhoto();
-        if (this$photo == null ? other$photo != null : !this$photo.equals(other$photo)) return false;
         final Object this$unit = this.getUnit();
         final Object other$unit = other.getUnit();
         if (this$unit == null ? other$unit != null : !this$unit.equals(other$unit)) return false;
@@ -204,7 +185,7 @@ public class Item {
     }
 
     protected boolean canEqual(final Object other) {
-        return other instanceof Item;
+        return other instanceof Cart;
     }
 
     public int hashCode() {
@@ -218,8 +199,6 @@ public class Item {
         result = result * PRIME + ($name == null ? 43 : $name.hashCode());
         final Object $category = this.getCategory();
         result = result * PRIME + ($category == null ? 43 : $category.hashCode());
-        final Object $photo = this.getPhoto();
-        result = result * PRIME + ($photo == null ? 43 : $photo.hashCode());
         final Object $unit = this.getUnit();
         result = result * PRIME + ($unit == null ? 43 : $unit.hashCode());
         final Object $location = this.getLocation();
@@ -240,6 +219,6 @@ public class Item {
     }
 
     public String toString() {
-        return "Item(id=" + this.getId() + ", code=" + this.getCode() + ", price=" + this.getPrice() + ", name=" + this.getName() + ", category=" + this.getCategory() + ", photo=" + this.getPhoto() + ", unit=" + this.getUnit() + ", location=" + this.getLocation() + ", status=" + this.getStatus() + ", note=" + this.getNote() + ", country=" + this.getCountry() + ", supplier=" + this.getSupplier() + ", receiptDay=" + this.getReceiptDay() + ", saleDate=" + this.getSaleDate() + ")";
+        return "Card(id=" + this.getId() + ", code=" + this.getCode() + ", price=" + this.getPrice() + ", name=" + this.getName() + ", category=" + this.getCategory() + ", unit=" + this.getUnit() + ", location=" + this.getLocation() + ", status=" + this.getStatus() + ", note=" + this.getNote() + ", country=" + this.getCountry() + ", supplier=" + this.getSupplier() + ", receiptDay=" + this.getReceiptDay() + ", saleDate=" + this.getSaleDate() + ")";
     }
 }

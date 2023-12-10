@@ -5,8 +5,8 @@ public class User {
     private String password;
     private Integer id;
 
-    public boolean isSuperAdmin(User user){
-        return user.getId() <= 6;
+    public boolean isSuperAdmin(){
+        return this.getId() <= 6;
     }
 
     public User(String login, String password, Integer id) {

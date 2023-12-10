@@ -5,9 +5,39 @@
     <title>Item Details</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
 </head>
 
     <style>
+        #categoryChart {
+  height: 400px; /* Задайте желаемую высоту для диаграммы */
+}
+
+        .button-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+        margin-top: 10px;
+                margin-left: 5px;
+    }
+
+    .rounded-button {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #2196F3;
+        color: white;
+        border: none;
+        border-radius: 25px;
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+
+        margin-top: 10px;
+    }
+
         body {
             background: linear-gradient(to right, #1976D2, #0D47A1);
             color: #333;
@@ -41,6 +71,7 @@
         th {
             background-color: #2196F3;
             color: #fff;
+            border-radius: 0px;
         }
 
         tbody tr:nth-child(even) {
@@ -78,10 +109,23 @@
 
     <!-- Кнопка добавления товара -->
     <a href="/add-item" style="margin-left: 5px; background-color: #2196F3; color: #fff; padding: 10px 20px; border-radius: 25px; text-decoration: none; height: 40px;">Добавить товар</a>
+    <!-- Кнопка перехода на страницу управления пользователями -->
+    <a href="/admin/manage-users" style="margin-left: 5px; background-color: #2196F3; color: #fff; padding: 10px 20px; border-radius: 25px; text-decoration: none; height: 40px;">Управление пользователями</a>
+    <a href="/changelog" style="margin-left: 5px; background-color: #2196F3; color: #fff; padding: 10px 20px; border-radius: 25px; text-decoration: none; height: 40px;">Просмотр изменений</a>
+    <a href="/cart" style="margin-left: 5px; background-color: #2196F3; color: #fff; padding: 10px 20px; border-radius: 25px; text-decoration: none; height: 40px;">Корзина</a>
+    <a href="/data/export" style="margin-left: 5px; background-color: #2196F3; color: #fff; padding: 10px 20px; border-radius: 25px; text-decoration: none; height: 40px;">Экспорт БД</a>
+    <form id="importForm" enctype="multipart/form-data">
+        <div class="button-container">
+            <label for="jsonFile" class="rounded-button">Choose File</label>
+            <button type="submit" class="rounded-button">Import</button>
+        </div>
+        <input type="file" id="jsonFile" accept=".json" style="display: none;">
+    </form>
+    <button id="generateReportButton" class="rounded-button" style="margin-bottom: 10px; margin-left: 10px;">Сгенерировать отчет</button>
 </div>
 
 
-<table class="striped">
+<table class="striped" id="data-table">
     <thead>
     <tr>
         <th><a th:href="@{/(sortBy='Product_id', sortOrder=${sortOrder == 'ASC' ? 'DESC' : 'ASC'})}">ID</a></th>
@@ -122,8 +166,95 @@
     </tr>
     </tbody>
 </table>
+
+<!-- Добавьте следующий код в ваш HTML-документ -->
+
+<!-- Подключение библиотеки Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- Добавление элемента, в котором будет отображаться диаграмма -->
+<div style="position: relative; display: flex; background-color: white;">
+    <div style="flex: 1;">
+        <canvas id="chart"></canvas>
+    </div>
+</div>
+
+<script>
+    // Получение таблицы и ее строк
+    const table = document.getElementById('data-table');
+    const rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+
+    // Создание объекта для хранения данных категорий
+    const categoryData = {};
+
+    // Перебор строк таблицы и подсчет категорий
+    for (let i = 0; i < rows.length; i++) {
+      const category = rows[i].getElementsByTagName('td')[3].innerText;
+      if (categoryData.hasOwnProperty(category)) {
+        categoryData[category]++;
+      } else {
+        categoryData[category] = 1;
+      }
+    }
+
+    // Получение уникальных категорий и их количества
+    const categories = Object.keys(categoryData);
+    const counts = Object.values(categoryData);
+
+    // Получение контейнера диаграммы
+    const container = document.querySelector('#chart').parentNode;
+
+    // Установка стилей для контейнера диаграммы
+    container.style.width = '100%';
+    container.style.height = '100%';
+
+    // Создание диаграммы с использованием библиотеки Chart.js
+    new Chart('chart', {
+      type: 'pie',
+      data: {
+        labels: categories,
+        datasets: [{
+          data: counts,
+          backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#8B008B', '#00FF00'],
+        }],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+      },
+    });
+</script>
+
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        $('#importForm').submit(function(event) {
+            event.preventDefault(); // Предотвращаем отправку формы по умолчанию
+
+            var fileInput = $('#jsonFile')[0];
+            var file = fileInput.files[0];
+
+            var formData = new FormData();
+            formData.append('file', file); // Добавляем файл в FormData
+
+            $.ajax({
+                url: '/data/import', // URL, на который будет отправлен запрос
+                type: 'POST',
+                contentType: false, // Используем false, чтобы браузер определил правильный Content-Type
+                processData: false, // Отключаем обработку данных перед отправкой
+                data: formData,
+                success: function(response) {
+                    alert('Data imported successfully'); // Выводим сообщение об успешном импорте
+                },
+                error: function(xhr, status, error) {
+                    alert('Error: ' + error); // Выводим сообщение об ошибке
+                }
+            });
+        });
+    });
+</script>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -136,6 +267,56 @@
                 this.getElementsByClassName('details-button')[0].style.display = 'none';
             });
         }
+    });
+</script>
+
+<script>
+    // Функция для отправки AJAX-запроса на сервер
+    function sendAjaxRequest(url, method, data) {
+      return new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        xhr.open(method, url, true);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.responseType = 'blob'; // Установка типа ответа на бинарные данные
+
+        xhr.onload = function () {
+          if (xhr.status === 200) {
+            resolve(xhr.response);
+          } else {
+            reject(new Error('Ошибка при выполнении AJAX-запроса'));
+          }
+        };
+
+        xhr.onerror = function () {
+          reject(new Error('Ошибка при выполнении AJAX-запроса'));
+        };
+
+        xhr.send(JSON.stringify(data));
+      });
+    }
+
+    // Обработчик клика по кнопке "Сгенерировать отчет"
+    document.getElementById('generateReportButton').addEventListener('click', function () {
+      // Отправка AJAX-запроса на сервер для генерации отчета
+      sendAjaxRequest('/api/generate-report', 'POST', {})
+        .then(function (response) {
+          // Создание ссылки для скачивания файла отчета
+          const downloadUrl = URL.createObjectURL(response);
+
+          // Создание ссылки для скачивания файла
+          const downloadLink = document.createElement('a');
+          downloadLink.href = downloadUrl;
+          downloadLink.download = 'report.xlsx';
+
+          // Эмуляция клика на ссылку для скачивания файла
+          downloadLink.click();
+
+          // Очистка ссылки и освобождение ресурсов
+          URL.revokeObjectURL(downloadUrl);
+        })
+        .catch(function (error) {
+          console.error('Ошибка при генерации отчета:', error);
+        });
     });
 </script>
 </body>

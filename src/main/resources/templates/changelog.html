@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Change Log</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            margin: 20px;
+        }
+
+        h1 {
+            color: #2196F3;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #2196F3;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+    </style>
+</head>
+<body>
+<h1>Change Log</h1>
+
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Table Name</th>
+        <th>Record ID</th>
+        <th>Change Type</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="entry : ${changeLogEntries}">
+        <td th:text="${entry.id}"></td>
+        <td th:text="${entry.tableName}"></td>
+        <td th:text="${entry.recordID}"></td>
+        <td th:text="${entry.changeType}"></td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

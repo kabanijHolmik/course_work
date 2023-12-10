@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Manage Users</title>
+    <style>
+        body {
+            background: linear-gradient(to right, #1976D2, #0D47A1);
+            color: #fff;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        table {
+            background-color: #fff;
+            border-radius: 10px;
+            overflow: hidden;
+            color: #000;
+            margin-top: 20px;
+            width: 80%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #2196F3;
+            color: #fff;
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: #E3F2FD;
+        }
+
+        button {
+            background-color: #FF5722;
+            color: #fff;
+            padding: 10px 15px;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s ease-in-out;
+        }
+
+        button:hover {
+            background-color: #E64A19;
+        }
+    </style>
+</head>
+<body>
+<h1>Manage Users</h1>
+
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Username</th>
+        <th>Action</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="user : ${users}">
+        <td th:text="${user.id}"></td>
+        <td th:text="${user.login}"></td>
+        <td>
+            <form th:if="${not user.isSuperAdmin()}" th:action="@{'/admin/' + ${user.id} + '/delete'}" method="post">
+                <button type="submit">Delete</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

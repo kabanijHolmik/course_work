@@ -3,6 +3,7 @@ package com.coursework.controller;
 import com.coursework.MD5Utils;
 import com.coursework.models.User;
 import com.coursework.services.UserService;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,11 +22,16 @@ public class AuthorizationController {
     }
 
     @PostMapping("/login")
-    public String login(@RequestParam String username, @RequestParam String password, Model model) {
+    public String login(@RequestParam String username, @RequestParam String password, Model model, HttpSession session) {
         User user = new User(username, password, null);
 
         if (userService.checkUser(user)) {
             model.addAttribute("message", "Авторизация успешна");
+            User loggedUser = UserService.getUserByUsername(user.getLogin());
+            System.out.println(loggedUser.toString());
+            // Добавление пользователя в сессию
+            session.setAttribute("loggedInUser", loggedUser);
+
             return "redirect:/";
         } else {
             model.addAttribute("message", "Неверный логин или пароль");
@@ -33,28 +39,32 @@ public class AuthorizationController {
         }
     }
 
+
     @GetMapping("/registration")
     public String showRegistrationForm(Model model) {
         model.addAttribute("user", new User());
         return "registration";
     }
 
-    @PostMapping("/registration")
+    @PostMapping("/register")
     public String registerUser(@ModelAttribute("user") User user, Model model) {
-
+        System.out.println(user.toString());
         if (user.getLogin() == null || user.getPassword() == null || user.getLogin().isEmpty() || user.getPassword().isEmpty()) {
             model.addAttribute("error", "Пожалуйста, заполните все поля");
+            System.out.println("check");
             return "registration";
         }
         if (userService.hasSameUsername(user)){
             model.addAttribute("error", "Имя пользователя занято");
+            System.out.println("username");
             return  "registration";
-        }
 
+        }
+        System.out.println("good");
         // Проведем регистрацию пользователя
         userService.saveUser(user);
 
         // Перенаправим пользователя на страницу входа
-        return "redirect:/login";
+        return "/authorization";
     }
 }

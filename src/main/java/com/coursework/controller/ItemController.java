@@ -1,7 +1,9 @@
 package com.coursework.controller;
 
 import com.coursework.models.Item;
+import com.coursework.models.User;
 import com.coursework.services.ItemService;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,10 +20,17 @@ public class ItemController {
     private final ItemService itemService;
 
     @GetMapping("/")
-    public String items(Model model,
+    public String items(HttpSession session, Model model,
                         @RequestParam(name = "sortBy", defaultValue = "Product_id") String sortBy,
                         @RequestParam(name = "sortOrder", defaultValue = "ASC") String sortOrder,
                         @RequestParam(name = "searchId", required = false) Integer searchId) {
+        User loggedInUser = (User) session.getAttribute("loggedInUser");
+
+        if (loggedInUser == null) {
+
+            return "authorization";
+        }
+
         List<Item> items;
 
         if (searchId != null) {
@@ -46,26 +55,50 @@ public class ItemController {
 
 
     @GetMapping("/item/{id}")
-    public String itemInfo(@PathVariable int id, Model model){
+    public String itemInfo(HttpSession session, @PathVariable int id, Model model){
+        User loggedInUser = (User) session.getAttribute("loggedInUser");
+
+        if (loggedInUser == null) {
+
+            return "authorization";
+        }
         model.addAttribute("item", itemService.getItemById(id));
 
         return "item-info";
     }
     @GetMapping("/add-item")
-    public String showAddItemForm(Model model) {
+    public String showAddItemForm(HttpSession session,Model model) {
+        User loggedInUser = (User) session.getAttribute("loggedInUser");
+
+        if (loggedInUser == null) {
+
+            return "authorization";
+        }
         model.addAttribute("item", new Item());
         return "add-item";
     }
 
     @PostMapping("/save-item")
-    public String saveItem(@ModelAttribute Item item) {
+    public String saveItem(HttpSession session,@ModelAttribute Item item) {
+        User loggedInUser = (User) session.getAttribute("loggedInUser");
+
+        if (loggedInUser == null) {
+
+            return "authorization";
+        }
         itemService.saveItem(item);
         return "redirect:/";
 
     }
 
     @PostMapping("/item/update")
-    public String updateItem(@RequestBody Map<Object, Object> data) {
+    public String updateItem(HttpSession session,@RequestBody Map<Object, Object> data) {
+        User loggedInUser = (User) session.getAttribute("loggedInUser");
+
+        if (loggedInUser == null) {
+
+            return "authorization";
+        }
         System.out.println(data.get("name"));
 
         String id = (String) data.get("id");
@@ -88,7 +121,13 @@ public class ItemController {
     }
 
     @PostMapping("/item/delete/{id}")
-    public String deleteItem(@PathVariable int id){
+    public String deleteItem(HttpSession session, @PathVariable int id){
+        User loggedInUser = (User) session.getAttribute("loggedInUser");
+
+        if (loggedInUser == null) {
+
+            return "authorization";
+        }
         itemService.deleteItem(id);
         return "redirect:/";
     }
